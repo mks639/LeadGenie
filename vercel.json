@@ -6,9 +6,10 @@
       "destination": "/api/$1"
     },
     {
-      "source": "/((?!api/|.*\\..*$).*)",
+      "source": "/((?!api/|src/|node_modules/|@vite/|@id/|@fs/|@react-refresh|public/|.*\\..*$).*)",
       "destination": "/index.html"
     }
   ]
 }
+
 
