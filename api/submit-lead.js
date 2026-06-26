@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
+import ws from 'ws';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -7,6 +8,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 // Load environment variables
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
+// Polyfill WebSocket for Node < 22 (Supabase Realtime compatibility)
+global.WebSocket = ws;
+
 
 // Initialize Supabase client
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
