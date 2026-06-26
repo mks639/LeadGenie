@@ -584,7 +584,66 @@ export default function Dashboard({ navigate }) {
                   </div>
                 </div>
 
+                {/* Simulation Control Card (Only visible for demo testing) */}
+                <div className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-2xl space-y-3">
+                  <div className="text-xs font-bold text-purple-400 flex items-center gap-1.5 uppercase tracking-wider font-sans">
+                    <Sparkles className="w-3.5 h-3.5" /> Simulation Controls (Demo Mode)
+                  </div>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    Since Resend Sandbox restricts email delivery to verified domains, use these buttons to trigger the email opens and link clicks telemetries instantly.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {/* Force Mark Sent */}
+                    {!selectedLead.email_sent && (
+                      <button
+                        onClick={async () => {
+                          const { error } = await supabase
+                            .from('leads')
+                            .update({ email_sent: true })
+                            .eq('id', selectedLead.id);
+                          if (!error) {
+                            setSelectedLead(prev => ({ ...prev, email_sent: true }));
+                            fetchLeads();
+                          }
+                        }}
+                        className="text-xs bg-green-500/10 hover:bg-green-500/20 text-green-400 font-semibold px-2.5 py-1.5 rounded-xl border border-green-500/20 transition-all font-sans"
+                      >
+                        Force Mark Sent
+                      </button>
+                    )}
+
+                    {/* Simulate Open */}
+                    {!selectedLead.email_opened && (
+                      <button
+                        onClick={async () => {
+                          await fetch(`/api/track-open?lead_id=${selectedLead.id}`);
+                          setSelectedLead(prev => ({ ...prev, email_opened: true }));
+                          fetchLeads();
+                        }}
+                        className="text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 font-semibold px-2.5 py-1.5 rounded-xl border border-blue-500/20 transition-all font-sans"
+                      >
+                        Simulate Email Open
+                      </button>
+                    )}
+
+                    {/* Simulate Click */}
+                    {!selectedLead.link_clicked && (
+                      <button
+                        onClick={async () => {
+                          await fetch(`/api/track-click?lead_id=${selectedLead.id}&dest=${encodeURIComponent(window.location.origin)}`);
+                          setSelectedLead(prev => ({ ...prev, link_clicked: true }));
+                          fetchLeads();
+                        }}
+                        className="text-xs bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 font-semibold px-2.5 py-1.5 rounded-xl border border-purple-500/20 transition-all font-sans"
+                      >
+                        Simulate Link Click
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <hr className="border-white/5" />
+
 
                 {/* Lead Profile */}
                 <div className="space-y-4">
