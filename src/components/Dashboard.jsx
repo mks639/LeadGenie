@@ -23,12 +23,8 @@ import {
 } from 'lucide-react';
 
 export default function Dashboard({ navigate }) {
-  // Authentication State
-  const [passphrase, setPassphrase] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem('admin_auth') === 'true'
-  );
-  const [loginError, setLoginError] = useState('');
+  // Authentication State (Bypassed for demo ease-of-use)
+  const isLoggedIn = true;
 
   // Data States
   const [leads, setLeads] = useState([]);
@@ -47,25 +43,6 @@ export default function Dashboard({ navigate }) {
   // UI States
   const [copiedField, setCopiedField] = useState('');
 
-  // Login handler
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const configPassphrase = import.meta.env.VITE_ADMIN_PASSPHRASE || 'admin';
-    
-    if (passphrase === configPassphrase) {
-      setIsLoggedIn(true);
-      localStorage.setItem('admin_auth', 'true');
-      setLoginError('');
-    } else {
-      setLoginError('Invalid security passphrase. Please try again.');
-    }
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem('admin_auth');
-    setPassphrase('');
-  };
 
   // Fetch leads from Supabase
   const fetchLeads = async () => {
@@ -149,63 +126,7 @@ export default function Dashboard({ navigate }) {
     }
   };
 
-  // Render Login Screen if not authenticated
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-6 relative">
-        <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-purple-900/10 blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-indigo-900/10 blur-[100px] pointer-events-none" />
-        
-        <div className="w-full max-w-md glass-panel p-8 rounded-3xl shadow-2xl space-y-6">
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center mx-auto shadow-lg shadow-purple-500/25 mb-4">
-              <Key className="w-6 h-6 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold text-white">Admin Dashboard</h2>
-            <p className="text-xs text-gray-400">Enter the passphrase to access lead analytics and telemetry</p>
-          </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Security Passphrase</label>
-              <input 
-                type="password" 
-                value={passphrase}
-                onChange={(e) => setPassphrase(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full px-4 py-3 rounded-xl border border-white/10 glass-input transition-all"
-                required
-                autoFocus
-              />
-            </div>
-
-            {loginError && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex gap-2 items-center">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <div>{loginError}</div>
-              </div>
-            )}
-
-            <button 
-              type="submit"
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-semibold text-white transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 text-sm"
-            >
-              Access Dashboard
-            </button>
-          </form>
-
-          <div className="pt-2 text-center">
-            <button 
-              onClick={() => navigate('/')} 
-              className="text-xs text-gray-500 hover:text-gray-300 underline transition-all"
-            >
-              Return to Landing Page
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col justify-between">
@@ -233,11 +154,10 @@ export default function Dashboard({ navigate }) {
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button 
-              onClick={handleLogout} 
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-all"
+              onClick={() => navigate('/')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20 transition-all font-sans"
             >
-              <LogOut className="w-3.5 h-3.5" />
-              Logout
+              Landing Page
             </button>
           </div>
         </div>
